@@ -1,0 +1,145 @@
+<div class="phrases-container">
+  <!-- Header -->
+  <div class="header">
+    <button class="back-btn" (click)="goToFeed()">
+      ← Volver al Feed
+    </button>
+    <h1>📚 Mis Palabras y Frases</h1>
+    <button class="add-btn" (click)="toggleAddForm()">
+      + Agregar
+    </button>
+  </div>
+
+  <!-- Add Form -->
+  @if (showAddForm()) {
+    <div class="add-form-card">
+      <h2>Agregar Nueva Palabra/Frase</h2>
+
+      @if (error()) {
+        <div class="error-message">{{ error() }}</div>
+      }
+
+      <div class="form-group">
+        <label>Palabra o Frase</label>
+        <input
+          type="text"
+          [value]="newPhraseText()"
+          (input)="newPhraseText.set($any($event.target).value)"
+          placeholder="Ej: artificial intelligence"
+          class="phrase-input"
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Idioma</label>
+          <select
+            [value]="newPhraseLanguage()"
+            (change)="newPhraseLanguage.set($any($event.target).value)"
+          >
+            <option value="english">English</option>
+            <option value="spanish">Spanish</option>
+            <option value="french">French</option>
+            <option value="german">German</option>
+            <option value="italian">Italian</option>
+            <option value="portuguese">Portuguese</option>
+            <option value="chinese">Chinese</option>
+            <option value="japanese">Japanese</option>
+            <option value="korean">Korean</option>
+            <option value="russian">Russian</option>
+            <option value="arabic">Arabic</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Acento (opcional)</label>
+          <select
+            [value]="newPhraseAccent()"
+            (change)="newPhraseAccent.set($any($event.target).value)"
+          >
+            <option value="">Todos</option>
+            <option value="us">US</option>
+            <option value="uk">UK</option>
+            <option value="aus">AUS</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="cancel-btn" (click)="toggleAddForm()">
+          Cancelar
+        </button>
+        <button
+          class="submit-btn"
+          (click)="addPhrase()"
+          [disabled]="isAddingPhrase()"
+        >
+          @if (isAddingPhrase()) {
+            Agregando...
+          } @else {
+            Agregar Frase
+          }
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Phrases List -->
+  <div class="phrases-list">
+    @if (isLoading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Cargando frases...</p>
+      </div>
+    } @else if (phrases().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">📝</div>
+        <h2>No hay frases aún</h2>
+        <p>Agrega palabras o frases para comenzar a ver videos</p>
+        <button class="primary-btn" (click)="toggleAddForm()">
+          Agregar Primera Frase
+        </button>
+      </div>
+    } @else {
+      <div class="phrase-grid">
+        @for (phrase of phrases(); track phrase.id) {
+          <div class="phrase-card" [class.inactive]="!phrase.isActive">
+            <div class="phrase-header">
+              <div class="phrase-text">{{ phrase.text }}</div>
+              <div class="phrase-actions">
+                <button
+                  class="toggle-btn"
+                  (click)="togglePhrase(phrase)"
+                  [title]="phrase.isActive ? 'Desactivar' : 'Activar'"
+                >
+                  {{ phrase.isActive ? '✓' : '✗' }}
+                </button>
+                <button
+                  class="delete-btn"
+                  (click)="deletePhrase(phrase.id)"
+                  title="Eliminar"
+                >
+                  🗑️
+                </button>
+              </div>
+            </div>
+            <div class="phrase-meta">
+              <span class="badge">{{ phrase.language }}</span>
+              @if (phrase.accent) {
+                <span class="badge accent">{{ phrase.accent }}</span>
+              }
+              <span class="video-count">{{ phrase.totalVideosAvailable }} videos</span>
+            </div>
+            <div class="phrase-stats">
+              <small>Creada: {{ phrase.createdAt | date:'short' }}</small>
+              @if (phrase.lastUsedAt) {
+                <small>Última vez: {{ phrase.lastUsedAt | date:'short' }}</small>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
+

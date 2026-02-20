@@ -1,0 +1,90 @@
+<div class="feed-container">
+  <!-- YouGlish Widget Container -->
+  <div id="youglish-widget" class="widget-container"></div>
+
+  <!-- Overlay Content -->
+  <div class="overlay-content">
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <div class="logo">🎬 YouGlish Reels</div>
+      <div class="user-menu">
+        <span class="username">{{ authService.currentUser() }}</span>
+        <button class="icon-btn" (click)="logout()" title="Cerrar sesión">
+          🚪
+        </button>
+      </div>
+    </div>
+
+    <!-- Current Phrase Display -->
+    @if (currentVideo()) {
+      <div class="phrase-display">
+        <div class="phrase-text">{{ currentVideo()!.phrase.text }}</div>
+        <div class="phrase-meta">
+          {{ currentVideo()!.language }}
+          @if (currentVideo()!.accent) {
+            <span>• {{ currentVideo()!.accent }}</span>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Controls Sidebar -->
+    <div class="controls-sidebar">
+      <button
+        class="control-btn"
+        (click)="toggleSubtitles()"
+        [class.active]="showSubtitles()"
+        title="Alternar subtítulos"
+      >
+        📝
+      </button>
+
+      <button
+        class="control-btn"
+        (click)="goToPhrases()"
+        title="Mis palabras/frases"
+      >
+        📚
+      </button>
+
+      <button
+        class="control-btn"
+        (click)="loadNextVideo()"
+        [disabled]="isLoading()"
+        title="Siguiente video"
+      >
+        ⏭️
+      </button>
+    </div>
+
+    <!-- Loading Indicator -->
+    @if (isLoading()) {
+      <div class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Cargando video...</p>
+      </div>
+    }
+
+    <!-- Error Message -->
+    @if (error()) {
+      <div class="error-overlay">
+        <div class="error-content">
+          <h2>⚠️ Sin videos</h2>
+          <p>{{ error() }}</p>
+          <button class="primary-btn" (click)="goToPhrases()">
+            Agregar Palabras/Frases
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Swipe Hint -->
+    @if (!isLoading() && !error() && currentVideo()) {
+      <div class="swipe-hint">
+        <span class="hint-icon">👆</span>
+        <span>Desliza hacia arriba o presiona ↓</span>
+      </div>
+    }
+  </div>
+</div>
+

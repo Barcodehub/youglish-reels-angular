@@ -1,0 +1,49 @@
+<div class="login-container">
+  <div class="login-card">
+    <h1>🎬 YouGlish Reels</h1>
+    <p class="subtitle">Aprende con videos infinitos</p>
+
+    @if (error()) {
+      <div class="error-message">{{ error() }}</div>
+    }
+
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="username">Usuario</label>
+        <input
+          type="text"
+          id="username"
+          [value]="username()"
+          (input)="username.set($any($event.target).value)"
+          placeholder="Tu nombre de usuario"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input
+          type="password"
+          id="password"
+          [value]="password()"
+          (input)="password.set($any($event.target).value)"
+          placeholder="Tu contraseña"
+          required
+        />
+      </div>
+
+      <button type="submit" [disabled]="isLoading()">
+        @if (isLoading()) {
+          <span>Cargando...</span>
+        } @else {
+          <span>Iniciar Sesión</span>
+        }
+      </button>
+    </form>
+
+    <p class="register-link">
+      ¿No tienes cuenta? <a routerLink="/register">Regístrate aquí</a>
+    </p>
+  </div>
+</div>
+
